@@ -1,5 +1,6 @@
 package co.test.springbootrabbitmq.consumer;
 
+import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
@@ -17,14 +18,23 @@ public class MessgeConsumer {
 	 *
 	 * @param message
 	 */
-	@RabbitListener(queues="${rabbitmq.test.queue}", priority="5", autoStartup = "true")
+	@RabbitListener(queues="${rabbitmq.test.queue}", priority="0", autoStartup = "true")
 	public void messageConsumer(String message) {
-		log.info("Message received of test : {}",message);
+		try {
+            log.info("Message received for test queue: {}", message);
+            //Perform Business logic
+        } catch (Exception ex) {
+            log.error("Failed to process message from test queue: {}", ex.getMessage(), ex);
+        }	
 	}
 
-	@RabbitListener(queues="${rabbitmq.test2.queue}", priority="2" ,autoStartup = "true")
-	public void messageConsumerSecond(String message) {
-		log.info("Message received of test2-> {}",message);
+	@RabbitListener(queues="${rabbitmq.test2.queue}", priority="1" ,autoStartup = "true")
+	public void secondMessageConsumer(String message) {
+		try {
+			log.info("Message received for test2 queue: {}",message);
+	    } catch (Exception ex) {
+            log.error("Failed to process message from test2: {}", ex.getMessage(), ex);
+        }
 	}
 	
 	/**
@@ -34,11 +44,19 @@ public class MessgeConsumer {
 	 */
 	@RabbitListener(queues="${rabbitmq.json.queue}")
 	public void jsonObjectReceived(User user) {
-		log.info("Message received of json-> {}", user);
+		try {
+			log.info("Message received of json-> {}", user);
+		} catch (AmqpException ex) {
+            log.error("Failed to process message from json: {}", ex.getMessage(), ex);
+		}
 	}
 	
 	@RabbitListener(queues="${rabbitmq.json.email-queue}")
 	public void jsonEmailReceived(User user) {
-		log.info("Message received of json email-> {}", user.getEmail());
+		try {
+			log.info("Message received email from json-> {}", user.getEmail());
+		} catch (AmqpException ex) {
+            log.error("Failed to process message from json email: {}", ex.getMessage(), ex);
+		}
 	}
 }
