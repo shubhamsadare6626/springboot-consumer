@@ -1,0 +1,26 @@
+pipeline {
+agent any
+
+    stages {
+        stage('Clone') {
+            steps {
+                // Get some code from a GitHub repository
+                git branch: 'master', credentialsId: 'github-sshkey', url: 'https://github.com/Zajelpc/technicalguftgu-time-tracker'
+
+            }
+        }
+        stage('Maven build') {
+            steps {
+                // Run Maven on a Unix agent.
+                sh "/opt/maven/bin/mvn clean compile install -DskipTests"
+            }
+        }
+        stage('Docker build') {
+            steps {
+                // Run Maven on a Unix agent.
+                sh "docker build -t timetracker ."
+            }
+        }
+    }
+}
+

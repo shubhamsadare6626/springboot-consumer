@@ -2,7 +2,7 @@ version: '3'
 services:
   springboot-rabbitmq-consumer:
     container_name: springboot-rabbitmq-consumer
-    image: shubham6626/springboot-rabbitmq-consumer #hub.docker.com or build image(Dockerfile)
+    image: personal/springboot-consumer
     ports:
      - 8088:8088
     volumes:
